@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SungPlays - Next Gen Music App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.15);
+            --blur: blur(10px);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .app-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 52, 54, 0.7);
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: var(--blur);
+            background: var(--glass);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 5;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            background: var(--gradient);
+            transform-style: preserve-3d;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center center;
+            background-size: cover;
+            opacity: 0.5;
+            z-index: -1;
+            transform: translateZ(-10px);
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Playlist Grid */
+        .section-title {
+            font-size: 18px;
+            margin: 20px 0 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .playlist-card {
+            position: relative;
+            height: 120px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .playlist-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .playlist-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .playlist-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .playlist-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        }
+
+        .playlist-info h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .playlist-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Featured Artists */
+        .artists-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .artist-card {
+            scroll-snap-align: start;
+            flex: 0 0 100px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .artist-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .artist-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .artist-card:hover .artist-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+        }
+
+        .artist-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Now Playing Bar */
+        .now-playing {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 480px;
+            height: 80px;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .now-playing:hover {
+            height: 100px;
+        }
+
+        .now-playing-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .now-playing:hover .now-playing-img {
+            transform: scale(1.1);
+        }
+
+        .now-playing-info {
+            flex: 1;
+        }
+
+        .now-playing-info h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .now-playing-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-controls i {
+            font-size: 20px;
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .player-controls i:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .play-btn {
+            background: var(--gradient);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Parallax Elements */
+        .parallax-layer {
+            position: absolute;
+            will-change: transform;
+        }
+
+        .layer-1 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent), transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+            top: 20%;
+            left: -50px;
+            z-index: 1;
+        }
+
+        .layer-2 {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--primary), transparent 70%);
+            opacity: 0.2;
+            border-radius: 50%;
+            bottom: 10%;
+            right: -30px;
+            z-index: 1;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.3s ease;
+        }
+
+        .fab i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.7);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 400px) {
+            .playlist-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* Micro-interactions */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple:after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform .5s, opacity 1s;
+        }
+
+        .ripple:active:after {
+            transform: scale(0, 0);
+            opacity: .3;
+            transition: 0s;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Parallax Background Elements -->
+        <div class="parallax-layer layer-1 floating"></div>
+        <div class="parallax-layer layer-2 floating" style="animation-delay: 0.5s;"></div>
+
+        <!-- App Header -->
+        <header class="header">
+            <div class="logo">SungPlays</div>
+            <img src="ayo.jpg" alt="User" class="user-avatar">
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero ripple">
+                <h1>Your Daily Mix</h1>
+                <p>Curated just for you • Updated daily</p>
+            </section>
+
+            <!-- Playlists Section -->
+            <h2 class="section-title"><i class="fas fa-compact-disc"></i> Your Playlists</h2>
+            <div class="playlist-grid">
+                <div class="playlist-card ripple">
+                    <img src="https://images.unsplash.com/photo-1496293455970-f8581aae0e3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1413&q=80" alt="Playlist">
+                    <div class="playlist-info">
+                        <h3>Chill Vibes</h3>
+                        <p>32 songs • 2h 15m</p>
+                    </div>
+                </div>
+                <div class="playlist-card ripple">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Playlist">
+                    <div class="playlist-info">
+                        <h3>Workout Mix</h3>
+                        <p>45 songs • 3h 10m</p>
+                    </div>
+                </div>
+                <div class="playlist-card ripple">
+                    <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Playlist">
+                    <div class="playlist-info">
+                        <h3>Focus Flow</h3>
+                        <p>28 songs • 1h 45m</p>
+                    </div>
+                </div>
+                <div class="playlist-card ripple">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Playlist">
+                    <div class="playlist-info">
+                        <h3>Party Starters</h3>
+                        <p>60 songs • 4h 20m</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artists Section -->
+            <h2 class="section-title"><i class="fas fa-users"></i> Featured Artists</h2>
+            <div class="artists-slider">
+                <div class="artist-card ripple">
+                    <img src="the weekend.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">The Weeknd</p>
+                </div>
+                <div class="artist-card ripple">
+                    <img src="taylor.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">Taylor Swift</p>
+                </div>
+                <div class="artist-card ripple">
+                    <img src="drake.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">Drake</p>
+                </div>
+                <div class="artist-card ripple">
+                    <img src="billie.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">Billie Eilish</p>
+                </div>
+                <div class="artist-card ripple">
+                    <img src="ed sheeran.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">Ed Sheeran</p>
+                </div>
+                <div class="artist-card ripple">
+                    <img src="ariana.jpg" alt="Artist" class="artist-avatar">
+                    <p class="artist-name">Ariana Grande</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Now Playing Bar -->
+        <div class="now-playing ripple">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Now Playing" class="now-playing-img">
+            <div class="now-playing-info">
+                <h4>Blinding Lights</h4>
+                <p>The Weeknd • After Hours</p>
+            </div>
+            <div class="player-controls">
+                <i class="fas fa-step-backward"></i>
+                <div class="play-btn">
+                    <i class="fas fa-pause"></i>
+                </div>
+                <i class="fas fa-step-forward"></i>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="fab ripple">
+            <i class="fas fa-random"></i>
+        </div>
+    </div>
+
+    <script>
+        // Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            const layer1 = document.querySelector('.layer-1');
+            const layer2 = document.querySelector('.layer-2');
+            
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            layer1.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            layer2.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
+        });
+
+        // Touch support for parallax
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const layer1 = document.querySelector('.layer-1');
+            const layer2 = document.querySelector('.layer-2');
+            
+            const x = touch.clientX / window.innerWidth;
+            const y = touch.clientY / window.innerHeight;
+            
+            layer1.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            layer2.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
+        });
+
+        // Card hover effects
+        const cards = document.querySelectorAll('.playlist-card, .artist-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = card.classList.contains('playlist-card') 
+                    ? 'translateY(-5px) scale(1.02)' 
+                    : 'translateY(-5px)';
+                card.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+                card.style.boxShadow = '';
+            });
+        });
+
+        // Now playing bar expand
+        const nowPlaying = document.querySelector('.now-playing');
+        nowPlaying.addEventListener('mouseenter', () => {
+            nowPlaying.style.height = '100px';
+        });
+        
+        nowPlaying.addEventListener('mouseleave', () => {
+            nowPlaying.style.height = '80px';
+        });
+
+        // Play/pause toggle
+        const playBtn = document.querySelector('.play-btn i');
+        playBtn.addEventListener('click', () => {
+            if (playBtn.classList.contains('fa-pause')) {
+                playBtn.classList.remove('fa-pause');
+                playBtn.classList.add('fa-play');
+            } else {
+                playBtn.classList.remove('fa-play');
+                playBtn.classList.add('fa-pause');
+            }
+        });
+
+        // Ripple effect for all ripple elements
+        const rippleElements = document.querySelectorAll('.ripple');
+        rippleElements.forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple-effect';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+            });
+        });
+
+        // Responsive adjustments
+        function handleResize() {
+            const appContainer = document.querySelector('.app-container');
+            if (window.innerWidth < 400) {
+                appContainer.style.maxWidth = '100%';
+            } else {
+                appContainer.style.maxWidth = '480px';
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>
