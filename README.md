@@ -1,6 +1,6 @@
 # Portfolio Website README
 
-![Portfolio Screenshot](./portfolio-screenshot.png)  
+![Portfolio Screenshot](./sung4k.jpg)  
 
 
 ## 🌟 About This Project
